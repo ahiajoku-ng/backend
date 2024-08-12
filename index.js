@@ -3,11 +3,12 @@ import mongoose from "mongoose";
 import cors from "cors";
 import "dotenv/config";
 
-import authRoutes from "./src/auth.js";
+import authRoutes from "./src/Auth.js";
 import userRoutes from "./src/routes/User.js";
 import LecturerRoutes from "./src/routes/Lecturers.js";
 import LectureNotesRoutes from "./src/routes/LectureNotes.js";
 import GalleryRoutes from "./src/routes/Gallery.js";
+import SpeakerRoutes from "./src/routes/Speaker.js";
 
 const app = express();
 const port = process.env.PORT;
@@ -29,7 +30,8 @@ app.use('/login', authRoutes);
 app.use('/user', userRoutes);
 app.use('/lecturers', LecturerRoutes);
 app.use('/lecture_notes', LectureNotesRoutes);
-app.use('/gallery', GalleryRoutes)
+app.use('/gallery', GalleryRoutes);
+app.use('/speakers', SpeakerRoutes)
 
 app.get('/', (req, res) => res.send('Please choose a specific route...'));
 

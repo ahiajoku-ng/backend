@@ -2,9 +2,9 @@ import express from 'express';
 import { verifyToken } from '../Auth.js';
 import mongoose from 'mongoose';
 import multer from 'multer';
-import { GalleryModel } from "../models/Gallery.js"
+import { SpeakerModel } from "../models/Speakers.js"
 
-const GalleryRoutes = express.Router();
+const SpeakerRoutes = express.Router();
 
 express().use(express.static('./src/Files'));
 express().use(express.urlencoded({extended: false}));
@@ -13,40 +13,42 @@ express().set('view engine', 'ejs')
 const store = multer.memoryStorage();
 const upload = multer({ storage: store });
 
-GalleryRoutes.get('/', verifyToken, async (req, res) => {
+SpeakerRoutes.get('/', verifyToken, async (req, res) => {
     try {
-        const result = await GalleryModel.find({});
+        const result = await SpeakerModel.find({});
         res.status(200).json(result);
     } catch (err) {
         res.status(500).json(err);
     }
 });
 
-GalleryRoutes.get("/:galleryid", verifyToken, async (req, res) => {
+SpeakerRoutes.get("/:speakerid", verifyToken, async (req, res) => {
     try {
-      const result = await GalleryModel.findById(req.params.galleryid);
+      const result = await SpeakerModel.findById(req.params.speakerid);
       res.status(200).json(result);
     } catch (err) {
       res.status(500).json(err);
     }
 });
 
-GalleryRoutes.post("/", verifyToken, upload.single("image"), async (req, res) => {
-    const gallery = new GalleryModel({
+SpeakerRoutes.post("/", verifyToken, upload.single("image"), async (req, res) => {
+    const speaker = new SpeakerModel({
         _id: new mongoose.Types.ObjectId(),
-        title: req.body.title,
-        description: req.body.description,
+        name: req.body.name,
+        topic: req.body.topic,
+        note: req.body.note,
         image: { 
             data: req.file.buffer,
             contentType: req.file.mimetype 
         }
     });
     try {
-        const result = await gallery.save();
+        const result = await speaker.save();
         res.status(201).json({
-            new_gallery: {
-                title: result.title,
-                description: result.description,
+            new_speaker: {
+                name: result.name,
+                topic: result.topic,
+                note: result.note,
                 image: result.image,
                 _id: result._id
             }
@@ -58,14 +60,14 @@ GalleryRoutes.post("/", verifyToken, upload.single("image"), async (req, res) =>
     }
 });
 
-GalleryRoutes.put("/:galleryid", verifyToken, upload.single("image"), async(req, res) => {
+SpeakerRoutes.put("/:speakerid", verifyToken, upload.single("image"), async(req, res) => {
     try {
-        const gallery = req.params.galleryid;
+        const speaker = req.params.speakerid;
         const updatedData = req.body;
         const options = { new: true };
 
-        const result = await GalleryModel.findByIdAndUpdate(
-            { _id: gallery}, updatedData, options
+        const result = await SpeakerModel.findByIdAndUpdate(
+            { _id: speaker}, updatedData, options
         )
         res.status(200).json(result);
         console.log(result);
@@ -76,13 +78,13 @@ GalleryRoutes.put("/:galleryid", verifyToken, upload.single("image"), async(req,
     }
 });
 
-GalleryRoutes.delete("/:galleryid", verifyToken, async (req, res) => {
+SpeakerRoutes.delete("/:speakerid", verifyToken, async (req, res) => {
     try {
-        const gallery = req.params.galleryid;
-        const deletedGallery = req.body;
+        const speaker = req.params.speakerid;
+        const deletedSpeaker = req.body;
         const options = {new: false}
-        const result = await GalleryModel.findByIdAndDelete(
-            {_id: gallery}, deletedGallery, options
+        const result = await SpeakerModel.findByIdAndDelete(
+            {_id: speaker}, deletedSpeaker, options
         )
         res.status(200).json(result);
         console.log(result);
@@ -93,4 +95,4 @@ GalleryRoutes.delete("/:galleryid", verifyToken, async (req, res) => {
     }
 })
 
-export default GalleryRoutes;
+export default SpeakerRoutes;

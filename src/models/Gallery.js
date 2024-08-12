@@ -6,7 +6,7 @@ const GallerySchema = new mongoose.Schema({
     image: {
         data: Buffer,
         contentType: String
-    },
+    }
 });
 
 export const GalleryModel = mongoose.model("Gallery", GallerySchema);
