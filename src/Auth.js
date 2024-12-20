@@ -6,7 +6,7 @@ const authRoutes = express.Router();
 
 const secret = "secret";
 
-authRoutes.post("/", async (req, res) => {
+authRoutes.post("", async (req, res) => {
     const { email, password } = req.body;
     const user = await UserModel.findOne({ email });
 
